@@ -72,3 +72,17 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 CUSTOMIZATION
 -Download exention Prettier and Simple react snippet
 -Font for Ayu MirageMod and make font size 15 and weight 200
+
+-To check
+Lazy loading of component
+-logging - papertrail
+-fuse theme for react
+-maintain changelog
+-react query
+-newline.co - all books
+-d3.js for chart
+-skeketon loading - instead of loadbar
+-graphql
+-CASL for defining scope in js
+
+-
