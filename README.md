@@ -73,6 +73,14 @@ CUSTOMIZATION
 -Download exention Prettier and Simple react snippet
 -Font for Ayu MirageMod and make font size 15 and weight 200
 
+Learning
+-props for passing value from parent to children
+-arrow function for event handling function
+-setstate to update state of component
+-render() to render html of component
+-imrc and cc shortcut for importing and creating component
+-if not provide default keyword in front of component then import with {}
+
 -To check
 Lazy loading of component
 -logging - papertrail

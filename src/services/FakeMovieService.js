@@ -1,4 +1,3 @@
-import { findRenderedComponentWithType } from "react-dom/test-utils";
 import * as GenreApi from "./FakeGenreService";
 const movies = [
   {

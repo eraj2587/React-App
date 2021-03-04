@@ -17,7 +17,8 @@ class Movies extends Component {
   }
 
   getTableContent() {
-    if (this.state.movies.length == 0) return "There are no movies in database";
+    if (this.state.movies.length === 0)
+      return "There are no movies in database";
     else {
       return (
         <table className="table table-strip">
