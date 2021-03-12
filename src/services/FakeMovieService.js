@@ -7,6 +7,7 @@ const movies = [
     genre: { id: 100, name: "Action" },
     dailyRentalRate: 12,
     publishDate: "2021-03-23T12:23:45.564Z",
+    isLiked: true,
   },
   {
     id: 2,
@@ -15,6 +16,7 @@ const movies = [
     genre: { id: 200, name: "Drama" },
     dailyRentalRate: 34,
     publishDate: "2019-04-03T12:23:45.564Z",
+    isLiked: false,
   },
   {
     id: 3,
@@ -23,6 +25,7 @@ const movies = [
     genre: { id: 300, name: "Sci-fi" },
     dailyRentalRate: 5,
     publishDate: "1980-03-23T12:23:45.564Z",
+    isLiked: true,
   },
   {
     id: 4,
@@ -31,6 +34,7 @@ const movies = [
     genre: { id: 400, name: "Cartoon" },
     dailyRentalRate: 13,
     publishDate: "1999-05-13T12:23:45.564Z",
+    isLiked: true,
   },
   {
     id: 5,
@@ -39,6 +43,7 @@ const movies = [
     genre: { id: 500, name: "Horror" },
     dailyRentalRate: 15,
     publishDate: "2011-04-02T12:23:45.564Z",
+    isLiked: false,
   },
   {
     id: 6,
@@ -47,6 +52,7 @@ const movies = [
     genre: { id: 600, name: "Sci-fi" },
     dailyRentalRate: 25,
     publishDate: "2002-03-13T12:23:45.564Z",
+    isLiked: true,
   },
 ];
 

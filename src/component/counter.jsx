@@ -2,29 +2,35 @@ import React, { Component } from "react";
 
 class Counter extends Component {
   render() {
+    const { counter, onIncrement, onDecrement, onDelete } = this.props;
+
     return (
-      <>
-        <h1 className={this.getClasses()}>{this.formatCount()}</h1>
-        <button
-          onClick={() => this.props.onIncrement(this.props.counter)}
-          className="btn btn-secondary btn-sm"
-        >
-          Increment
-        </button>
-        <span></span>
-        <button
-          onClick={() => this.props.onDecrement(this.props.counter)}
-          className="btn btn-primary btn-sm"
-        >
-          Decrement
-        </button>
-        <button
-          onClick={() => this.props.onDelete(this.props.counter)}
-          className="btn btn-danger btn-sm m-2"
-        >
-          Delete
-        </button>
-      </>
+      <div className="row">
+        <div className="col-1">
+          <h1 className={this.getClasses()}>{this.formatCount()}</h1>
+        </div>
+        <div className="col-11">
+          <button
+            onClick={() => onIncrement(this.props.counter)}
+            className="btn btn-secondary btn-sm"
+          >
+            +
+          </button>
+          <button
+            onClick={() => onDecrement(this.props.counter)}
+            className="btn btn-primary btn-sm m-2"
+            disabled={this.props.counter.value === 0 ? "disabled" : ""}
+          >
+            -
+          </button>
+          <button
+            onClick={() => onDelete(this.props.counter)}
+            className="btn btn-danger btn-sm m-2"
+          >
+            X
+          </button>
+        </div>
+      </div>
     );
   }
 
