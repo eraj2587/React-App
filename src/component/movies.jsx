@@ -2,10 +2,16 @@ import React, { Component } from "react";
 import { getMovies } from "../services/FakeMovieService";
 import Like from "../common/Like";
 import Pagination from "../common/pagination";
+import paginate from "../util/paginate";
+import ListGroup from "../common/listgroup";
 
 class Movies extends Component {
   state = {
     movies: getMovies(),
+    pageSize: 2,
+    currentPage: 1,
+    selectedGenre: 0,
+    filteredMovies: getMovies(),
   };
 
   deleteMovie = (movie) => {
@@ -22,20 +28,51 @@ class Movies extends Component {
     this.setState({ movies });
   };
 
+  onPageClicked = (page) => {
+    this.setState({ currentPage: page });
+  };
+
+  onGenreSelected = (genre) => {
+    //console.log("genre", genre);
+    this.setState({ selectedGenre: genre.id, currentPage: 1 });
+    let movies =
+      genre.id === 0
+        ? this.state.movies
+        : this.state.movies.filter((x) => x.genre.id === genre.id);
+    this.setState({ filteredMovies: movies });
+  };
+
   render() {
     return (
       <>
-        <main className="container">
-          {this.getPageCaption()}
-          {this.getTableContent()}
-          {this.getPagination()}
+        <main className="container" style={{ marginTop: 50 }}>
+          <div className="row">
+            <div className="col-3">
+              <ListGroup
+                selectedGenre={this.state.selectedGenre}
+                onSelected={this.onGenreSelected}
+              />
+            </div>
+            <div className="col-9">
+              {this.getPageCaption()}
+              {this.getTableContent()}
+              {this.getPagination()}
+            </div>
+          </div>
         </main>
       </>
     );
   }
 
   getPagination() {
-    return <Pagination pageSize="5" totalMovies={this.state.movies.length} />;
+    return (
+      <Pagination
+        pageSize={this.state.pageSize}
+        totalMovies={this.state.filteredMovies.length}
+        currentPage={this.state.currentPage}
+        onPageChange={this.onPageClicked}
+      />
+    );
   }
 
   getPageCaption() {
@@ -50,53 +87,30 @@ class Movies extends Component {
     }
   }
 
-  getPagination() {
-    const pageSize = 5;
-    let { length: totalMovies } = this.state.movies;
-    let noOfPages =
-      totalMovies % pageSize === 0
-        ? totalMovies / pageSize
-        : totalMovies / pageSize + 1;
-    let allPages = [...Array.from({ length: noOfPages }, (_, i) => i + 1)];
-
-    if (totalMovies > 0) {
-      return (
-        <nav aria-label="Page navigation example">
-          <ul className="pagination">
-            <li className="page-item">
-              <a class="page-link">Previous</a>
-            </li>
-            {allPages.map((page) => (
-              <li className="page-item">
-                <a class="page-link">{page}</a>
-              </li>
-            ))}
-            <li className="page-item">
-              <a class="page-link">Next</a>
-            </li>
-          </ul>
-        </nav>
-      );
-    }
-  }
-
   getTableContent() {
-    if (this.state.movies.length === 0)
-      return "There are no movies in database";
+    const selectedMovies = paginate(
+      this.state.filteredMovies,
+      this.state.currentPage,
+      this.state.pageSize
+    );
+
+    if (selectedMovies.length === 0) return "There are no movies in database";
     else {
       return (
         <table className="table table-strip m-2">
           <thead>
-            <th>Title</th>
-            <th>Genre</th>
-            <th>Stock</th>
-            <th>Rental</th>
-            <th>Published Date</th>
-            <th />
-            <th />
+            <tr>
+              <td style={{ fontWeight: 500 }}>Title</td>
+              <td style={{ fontWeight: 500 }}>Genre</td>
+              <td style={{ fontWeight: 500 }}>Stock</td>
+              <td style={{ fontWeight: 500 }}>Rental</td>
+              <td style={{ fontWeight: 500 }}>Published Date</td>
+              <td />
+              <td />
+            </tr>
           </thead>
           <tbody>
-            {this.state.movies.map((movie) => (
+            {selectedMovies.map((movie) => (
               <tr key={movie.id}>
                 <td>{movie.title}</td>
                 <td>{movie.genre.name}</td>

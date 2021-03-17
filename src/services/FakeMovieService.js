@@ -1,10 +1,10 @@
-import * as GenreApi from "./FakeGenreService";
+import { getGenres } from "./FakeGenreService";
 const movies = [
   {
     id: 1,
     title: "Terminator",
     numberInStock: 6,
-    genre: { id: 100, name: "Action" },
+    genre: { id: 100, name: "Horror" },
     dailyRentalRate: 12,
     publishDate: "2021-03-23T12:23:45.564Z",
     isLiked: true,
@@ -58,7 +58,7 @@ const movies = [
     id: 7,
     title: "Die Hard",
     numberInStock: 16,
-    genre: { id: 600, name: "Horror" },
+    genre: { id: 100, name: "Horror" },
     dailyRentalRate: 25,
     publishDate: "2002-04-13T12:23:45.564Z",
     isLiked: false,
@@ -67,7 +67,7 @@ const movies = [
     id: 8,
     title: "The Grudge",
     numberInStock: 10,
-    genre: { id: 600, name: "Horror" },
+    genre: { id: 100, name: "Horror" },
     dailyRentalRate: 15,
     publishDate: "2004-05-13T12:23:45.564Z",
     isLiked: false,
@@ -76,7 +76,7 @@ const movies = [
     id: 9,
     title: "Passangers",
     numberInStock: 16,
-    genre: { id: 600, name: "Sci-fi" },
+    genre: { id: 300, name: "Sci-fi" },
     dailyRentalRate: 25,
     publishDate: "2002-03-13T12:23:45.564Z",
     isLiked: true,
@@ -85,7 +85,7 @@ const movies = [
     id: 10,
     title: "Iron Man",
     numberInStock: 16,
-    genre: { id: 600, name: "Fantacy" },
+    genre: { id: 500, name: "Horror" },
     dailyRentalRate: 25,
     publishDate: "2001-12-13T12:23:45.564Z",
     isLiked: false,
@@ -94,7 +94,7 @@ const movies = [
     id: 11,
     title: "Gravity",
     numberInStock: 16,
-    genre: { id: 600, name: "Sci-fi" },
+    genre: { id: 300, name: "Sci-fi" },
     dailyRentalRate: 25,
     publishDate: "2002-03-13T12:23:45.564Z",
     isLiked: true,
@@ -112,7 +112,7 @@ export function getMovie(movieId) {
 export function saveMovie(movie) {
   let movieInDb = movies.find((x) => x.id === movie.Id) || {};
   movieInDb.name = movie.name;
-  movieInDb.genre = GenreApi.find((g) => g.id === movie.genre.id);
+  movieInDb.genre = getGenres().find((g) => g.id === movie.genre.id);
   movieInDb.numberInStock = movie.numberInStock;
   movieInDb.publishDate = movie.publishDate;
   movieInDb.title = movie.title;
