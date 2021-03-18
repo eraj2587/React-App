@@ -1,28 +1,30 @@
-import { checkPropTypes } from "prop-types";
 import React, { Component } from "react";
-import { getGenres } from "../services/FakeGenreService";
 
 const ListGroup = (props) => {
-  const genres = getGenres();
-  const { onSelected, selectedGenre } = props;
+  const { onSelected, selectedItem, items, _id, _textValue } = props;
   return (
     <ul className="list-group">
-      {genres.map((genre) => (
+      {items.map((item) => (
         <li
           className={
-            selectedGenre === genre.id
+            selectedItem === item[_id]
               ? "list-group-item active"
               : "list-group-item"
           }
           style={{ cursor: "pointer" }}
-          key={genre.id}
-          onClick={() => onSelected(genre)}
+          key={item[_id]}
+          onClick={() => onSelected(item)}
         >
-          {genre.name}
+          {item[_textValue]}
         </li>
       ))}
     </ul>
   );
+};
+
+ListGroup.defaultProps = {
+  _id: "id",
+  _textValue: "name",
 };
 
 export default ListGroup;

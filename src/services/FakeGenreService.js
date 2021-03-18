@@ -1,5 +1,4 @@
 const genres = [
-  { id: 0, name: "All" },
   { id: 100, name: "Horror" },
   { id: 200, name: "Drama" },
   { id: 300, name: "Sci-fi" },

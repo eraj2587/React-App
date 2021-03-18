@@ -4,20 +4,39 @@ import Like from "../common/Like";
 import Pagination from "../common/pagination";
 import paginate from "../util/paginate";
 import ListGroup from "../common/listgroup";
+import { getGenres } from "../services/FakeGenreService";
 
 class Movies extends Component {
   state = {
-    movies: getMovies(),
-    pageSize: 2,
+    movies: [],
+    genres: [],
+    pageSize: 5,
     currentPage: 1,
     selectedGenre: 0,
-    filteredMovies: getMovies(),
+    filteredMovies: [],
   };
+
+  constructor() {
+    super();
+    const genres = [{ name: "All", id: 0 }, ...getGenres()];
+    this.state.movies = getMovies();
+    this.state.genres = genres;
+    this.state.filteredMovies = getMovies();
+  }
+  // componentDidMount() {
+  //   this.setState({
+  //     movies: getMovies(),
+  //     genres: getGenres(),
+  //     filteredMovies: getMovies(),
+  //   });
+  // }
 
   deleteMovie = (movie) => {
     //console.log(movie);
-    let movies = this.state.movies.filter((x) => x.id !== movie.id);
-    this.setState({ movies });
+    let filteredMovies = this.state.filteredMovies.filter(
+      (x) => x.id !== movie.id
+    );
+    this.setState({ filteredMovies });
   };
 
   onLikeClicked = (movie) => {
@@ -49,8 +68,9 @@ class Movies extends Component {
           <div className="row">
             <div className="col-3">
               <ListGroup
-                selectedGenre={this.state.selectedGenre}
+                selectedItem={this.state.selectedGenre}
                 onSelected={this.onGenreSelected}
+                items={this.state.genres}
               />
             </div>
             <div className="col-9">
@@ -76,10 +96,10 @@ class Movies extends Component {
   }
 
   getPageCaption() {
-    if (this.state.movies.length > 0) {
+    if (this.state.filteredMovies.length > 0) {
       return (
         <span className="m-2">
-          Showing {this.state.movies.length} movies from database
+          Showing {this.state.filteredMovies.length} movies from database
         </span>
       );
     } else {
