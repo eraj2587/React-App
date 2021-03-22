@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { getMovies } from "../services/FakeMovieService";
-import Like from "../common/Like";
 import Pagination from "../common/pagination";
 import paginate from "../util/paginate";
 import ListGroup from "../common/listgroup";
 import { getGenres } from "../services/FakeGenreService";
+import MovieTable from "./movieTable";
+import _ from "lodash";
 
 class Movies extends Component {
   state = {
@@ -14,6 +15,7 @@ class Movies extends Component {
     currentPage: 1,
     selectedGenre: 0,
     filteredMovies: [],
+    sortColumn: {},
   };
 
   constructor() {
@@ -22,14 +24,8 @@ class Movies extends Component {
     this.state.movies = getMovies();
     this.state.genres = genres;
     this.state.filteredMovies = getMovies();
+    this.state.sortColumn = { path: "title", orderBy: "asc" };
   }
-  // componentDidMount() {
-  //   this.setState({
-  //     movies: getMovies(),
-  //     genres: getGenres(),
-  //     filteredMovies: getMovies(),
-  //   });
-  // }
 
   deleteMovie = (movie) => {
     //console.log(movie);
@@ -52,7 +48,6 @@ class Movies extends Component {
   };
 
   onGenreSelected = (genre) => {
-    //console.log("genre", genre);
     this.setState({ selectedGenre: genre.id, currentPage: 1 });
     let movies =
       genre.id === 0
@@ -61,7 +56,24 @@ class Movies extends Component {
     this.setState({ filteredMovies: movies });
   };
 
+  onSorting = (sortColumn) => {
+    console.log("parent", sortColumn);
+    console.log("parent state", this.state.sortColumn);
+    const filteredMovies = _.orderBy(
+      this.state.filteredMovies,
+      [sortColumn.path],
+      [sortColumn.orderBy]
+    );
+    this.setState({ sortColumn, filteredMovies });
+  };
+
   render() {
+    const selectedMovies = paginate(
+      this.state.filteredMovies,
+      this.state.currentPage,
+      this.state.pageSize
+    );
+
     return (
       <>
         <main className="container" style={{ marginTop: 50 }}>
@@ -74,89 +86,25 @@ class Movies extends Component {
               />
             </div>
             <div className="col-9">
-              {this.getPageCaption()}
-              {this.getTableContent()}
-              {this.getPagination()}
+              Showing {this.state.filteredMovies.length} movies from database
+              <MovieTable
+                movies={selectedMovies}
+                onLiked={this.onLikeClicked}
+                onDelete={this.deleteMovie}
+                onSort={this.onSorting}
+                sortColumn={this.state.sortColumn}
+              />
+              <Pagination
+                pageSize={this.state.pageSize}
+                totalMovies={this.state.filteredMovies.length}
+                currentPage={this.state.currentPage}
+                onPageChange={this.onPageClicked}
+              />
             </div>
           </div>
         </main>
       </>
     );
-  }
-
-  getPagination() {
-    return (
-      <Pagination
-        pageSize={this.state.pageSize}
-        totalMovies={this.state.filteredMovies.length}
-        currentPage={this.state.currentPage}
-        onPageChange={this.onPageClicked}
-      />
-    );
-  }
-
-  getPageCaption() {
-    if (this.state.filteredMovies.length > 0) {
-      return (
-        <span className="m-2">
-          Showing {this.state.filteredMovies.length} movies from database
-        </span>
-      );
-    } else {
-      return "";
-    }
-  }
-
-  getTableContent() {
-    const selectedMovies = paginate(
-      this.state.filteredMovies,
-      this.state.currentPage,
-      this.state.pageSize
-    );
-
-    if (selectedMovies.length === 0) return "There are no movies in database";
-    else {
-      return (
-        <table className="table table-strip m-2">
-          <thead>
-            <tr>
-              <td style={{ fontWeight: 500 }}>Title</td>
-              <td style={{ fontWeight: 500 }}>Genre</td>
-              <td style={{ fontWeight: 500 }}>Stock</td>
-              <td style={{ fontWeight: 500 }}>Rental</td>
-              <td style={{ fontWeight: 500 }}>Published Date</td>
-              <td />
-              <td />
-            </tr>
-          </thead>
-          <tbody>
-            {selectedMovies.map((movie) => (
-              <tr key={movie.id}>
-                <td>{movie.title}</td>
-                <td>{movie.genre.name}</td>
-                <td>{movie.numberInStock}</td>
-                <td>{movie.dailyRentalRate}</td>
-                <td>{movie.publishDate}</td>
-                <td>
-                  <Like
-                    isLike={movie.isLiked}
-                    onclick={() => this.onLikeClicked(movie)}
-                  />
-                </td>
-                <td>
-                  <button
-                    onClick={() => this.deleteMovie(movie)}
-                    className="btn btn-danger"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      );
-    }
   }
 }
 
