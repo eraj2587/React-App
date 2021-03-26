@@ -13,8 +13,7 @@ class Movies extends Component {
     genres: [],
     pageSize: 5,
     currentPage: 1,
-    selectedGenre: 0,
-    filteredMovies: [],
+    selectedGenre: {},
     sortColumn: {},
   };
 
@@ -23,16 +22,14 @@ class Movies extends Component {
     const genres = [{ name: "All", id: 0 }, ...getGenres()];
     this.state.movies = getMovies();
     this.state.genres = genres;
-    this.state.filteredMovies = getMovies();
+    this.state.selectedGenre = { id: 0, name: "All" };
     this.state.sortColumn = { path: "title", orderBy: "asc" };
   }
 
   deleteMovie = (movie) => {
     //console.log(movie);
-    let filteredMovies = this.state.filteredMovies.filter(
-      (x) => x.id !== movie.id
-    );
-    this.setState({ filteredMovies });
+    let movies = this.state.movies.filter((x) => x.id !== movie.id);
+    this.setState({ movies });
   };
 
   onLikeClicked = (movie) => {
@@ -48,31 +45,47 @@ class Movies extends Component {
   };
 
   onGenreSelected = (genre) => {
-    this.setState({ selectedGenre: genre.id, currentPage: 1 });
-    let movies =
-      genre.id === 0
-        ? this.state.movies
-        : this.state.movies.filter((x) => x.genre.id === genre.id);
-    this.setState({ filteredMovies: movies });
+    this.setState({ selectedGenre: genre, currentPage: 1 });
   };
 
   onSorting = (sortColumn) => {
-    console.log("parent", sortColumn);
-    console.log("parent state", this.state.sortColumn);
-    const filteredMovies = _.orderBy(
-      this.state.filteredMovies,
+    this.setState({ sortColumn });
+  };
+
+  getPaginatedMovies = () => {
+    const {
+      movies,
+      currentPage,
+      pageSize,
+      sortColumn,
+      selectedGenre,
+    } = this.state;
+
+    const filteredMovies =
+      selectedGenre.id === 0
+        ? movies
+        : movies.filter((x) => x.genre.id === selectedGenre.id);
+    var sortedMovies = _.orderBy(
+      filteredMovies,
       [sortColumn.path],
       [sortColumn.orderBy]
     );
-    this.setState({ sortColumn, filteredMovies });
+    const selectedMovies = paginate(sortedMovies, currentPage, pageSize);
+    return { movies: selectedMovies, totalRecords: filteredMovies.length };
   };
 
   render() {
-    const selectedMovies = paginate(
-      this.state.filteredMovies,
-      this.state.currentPage,
-      this.state.pageSize
-    );
+    const {
+      currentPage,
+      pageSize,
+      genres,
+      sortColumn,
+      selectedGenre,
+    } = this.state;
+
+    const { movies, totalRecords } = this.getPaginatedMovies();
+
+    if (totalRecords === 0) return "No movies found in database";
 
     return (
       <>
@@ -80,24 +93,24 @@ class Movies extends Component {
           <div className="row">
             <div className="col-3">
               <ListGroup
-                selectedItem={this.state.selectedGenre}
+                selectedItem={selectedGenre}
                 onSelected={this.onGenreSelected}
-                items={this.state.genres}
+                items={genres}
               />
             </div>
             <div className="col-9">
-              Showing {this.state.filteredMovies.length} movies from database
+              Showing {totalRecords} movies from database
               <MovieTable
-                movies={selectedMovies}
+                movies={movies}
                 onLiked={this.onLikeClicked}
                 onDelete={this.deleteMovie}
                 onSort={this.onSorting}
-                sortColumn={this.state.sortColumn}
+                sortColumn={sortColumn}
               />
               <Pagination
-                pageSize={this.state.pageSize}
-                totalMovies={this.state.filteredMovies.length}
-                currentPage={this.state.currentPage}
+                pageSize={pageSize}
+                totalMovies={totalRecords}
+                currentPage={currentPage}
                 onPageChange={this.onPageClicked}
               />
             </div>

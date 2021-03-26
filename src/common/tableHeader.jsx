@@ -13,12 +13,10 @@ class TableHeader extends Component {
   };
 
   renderSortIcon = (column) => {
-    console.log("props", this.props);
-    console.log("column", column);
-    const { sortColumn } = this.props.sortColumn;
-    //if (column.path !== sortColumn.path) return null;
-    // if (sortColumn.orderBy === "asc") return <i className="fa fa-sort-asc"></i>;
-    // return <i className="fa fa-sort-desc"></i>;
+    const { sortColumn } = this.props;
+    if (column.path !== sortColumn.path) return null;
+    if (sortColumn.orderBy === "asc") return <i className="fa fa-sort-asc"></i>;
+    return <i className="fa fa-sort-desc"></i>;
   };
 
   render() {
